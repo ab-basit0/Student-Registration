@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind to use the Inter font family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Registration Card Container -->
+    <div class="w-full max-w-md bg-white shadow-xl rounded-xl p-8 md:p-10 border border-gray-100">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">Student Registration</h1>
+        <p class="text-gray-500 mb-8 text-center">Join our platform by filling out your details below.</p>
+
+        <!-- Dynamic Message Box (for Success/Error) -->
+        <div id="message-box" class="hidden p-3 mb-4 rounded-lg text-sm font-medium"></div>
+
+        <form id="registrationForm" onsubmit="handleRegistration(event)">
+            <!-- Full Name Field -->
+            <div class="mb-4">
+                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input type="text" id="fullName" name="fullName" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                       placeholder="Enter your full name">
+                <p id="error-fullName" class="text-xs text-red-500 mt-1 hidden">Name is required.</p>
+            </div>
+
+            <!-- Student ID Field (Example of a required field) -->
+            <div class="mb-4">
+                <label for="studentId" class="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+                <input type="text" id="studentId" name="studentId" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                       placeholder="e.g., S123456">
+                <p id="error-studentId" class="text-xs text-red-500 mt-1 hidden">Student ID is required.</p>
+            </div>
+
+            <!-- Email Field (Focus of TC_03) -->
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input type="email" id="email" name="email" required
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                       placeholder="you@example.com">
+                <p id="error-email" class="text-xs text-red-500 mt-1 hidden">Invalid email format.</p>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-6">
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input type="password" id="password" name="password" required minlength="6"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                       placeholder="Minimum 6 characters">
+                <p id="error-password" class="text-xs text-red-500 mt-1 hidden">Password must be at least 6 characters.</p>
+            </div>
+
+            <!-- Submit Button (Focus of TC_02 & TC_04) -->
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 ease-in-out">
+                Register Student
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // --- Core Validation Logic for Testing (Task 3) ---
+
+        /**
+         * Validates the provided email string using a simple regular expression.
+         * This function is exported in a real module setup for testing, but here it's global.
+         * @param {string} email - The email address to validate.
+         * @returns {boolean} True if the email is valid, false otherwise.
+         */
+        function validateEmail(email) {
+            // Simple regex: checks for at least one character, followed by @, followed by at least one character, followed by a dot, followed by at least two characters.
+            const re = /\S+@\S+\.\S{2,}/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        // --- Form Handling and UI Logic ---
+
+        const form = document.getElementById('registrationForm');
+        const messageBox = document.getElementById('message-box');
+
+        /**
+         * Displays a message in the message box element.
+         * @param {string} message - The text content of the message.
+         * @param {string} type - 'success' or 'error' to determine styling.
+         */
+        function displayMessage(message, type) {
+            messageBox.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            messageBox.textContent = message;
+
+            if (type === 'success') {
+                messageBox.classList.add('bg-green-100', 'text-green-700');
+            } else if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-700');
+            }
+        }
+
+        /**
+         * Hides all inline error messages.
+         */
+        function resetErrors() {
+            document.querySelectorAll('[id^="error-"]').forEach(el => el.classList.add('hidden'));
+            messageBox.classList.add('hidden');
+        }
+
+        /**
+         * Handles the form submission and validation (TC_02, TC_03, TC_04).
+         * @param {Event} event - The form submission event.
+         */
+        function handleRegistration(event) {
+            event.preventDefault(); // Stop default form submission
+            resetErrors();
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const studentId = document.getElementById('studentId').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            let isValid = true;
+
+            // TC_02: Check for empty fields (handled by 'required', but reinforced here)
+            if (!fullName) {
+                document.getElementById('error-fullName').classList.remove('hidden');
+                isValid = false;
+            }
+            if (!studentId) {
+                document.getElementById('error-studentId').classList.remove('hidden');
+                isValid = false;
+            }
+
+            // TC_03: Email Validation Check
+            if (!validateEmail(email)) {
+                document.getElementById('error-email').classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Password length check
+            if (password.length < 6) {
+                document.getElementById('error-password').classList.remove('hidden');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // TC_04: Successful Registration
+                displayMessage(`Registration successful for ${fullName} (${studentId})!`, 'success');
+                form.reset();
+            } else {
+                // TC_02: Validation messages are shown
+                displayMessage('Please correct the errors in the form before submitting.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
