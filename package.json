@@ -1,0 +1,20 @@
+{
+  "name": "webappproject",
+  "version": "1.0.0",
+  "description": "Student Registration website for CI/CD lab.",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "keywords": [
+    "devops",
+    "ci/cd",
+    "jest"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}

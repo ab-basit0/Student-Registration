@@ -1,0 +1,37 @@
+# This file completes Task 2: DevOps Integration and Task 4: Testing Integration.
+name: Build and Test
+
+# Triggers the workflow on pushes to the main branch and on pull requests
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    
+jobs:
+  build_and_test:
+    # Use the latest Ubuntu runner environment
+    runs-on: ubuntu-latest 
+    
+    steps:
+      # Step 1: Checkout the source code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Node.js environment (required for npm install and Jest)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Specify a modern Node.js version
+
+      # Step 3: Install dependencies (will install Jest based on package.json)
+      - name: Install dependencies
+        run: npm install
+        
+      # Step 4: Run Automated Tests (Task 4)
+      - name: Run Jest Tests
+        run: npm test
+        
+      # Step 5 (Optional - Task 5): Display confirmation that tests passed
+      - name: Test Status Check
+        run: echo "Automated tests passed successfully. Ready for deployment."
