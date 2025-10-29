@@ -1,43 +1,30 @@
-# This file completes Task 2: DevOps Integration and Task 4: Testing Integration.
 name: Build and Test
 
-# Triggers the workflow on pushes to the main branch and on pull requests
-on: 
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-    
+on: [push, pull_request]
+
 jobs:
-  build_and_test:
-    # Use the latest Ubuntu runner environment
-    runs-on: ubuntu-latest 
-    
+  build:
+    runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the source code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Setup Node.js environment (required for npm install and Jest)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Specify a modern Node.js version
+          node-version: '20'
 
-      # Step 3: Install dependencies (will install Jest based on package.json)
       - name: Install dependencies
         run: npm install
-        
-      # === FIX FOR ES MODULE (IMPORT/EXPORT) ERROR ===
-      # This configures the environment to handle modern ES module syntax (import/export)
-      - name: Configure Node for ES Modules
-        run: echo "NODE_OPTIONS=--experimental-vm-modules" >> $GITHUB_ENV
-      # ===============================================
 
-      # Step 4: Run Automated Tests (Task 4)
-      - name: Run Jest Tests
+      - name: Run Tests and Generate Reports
+        # This runs Jest, which generates the report configured in package.json
         run: npm test
-        
-      # Step 5 (Optional - Task 5): Display confirmation that tests passed
-      - name: Test Status Check
-        run: echo "Automated tests passed successfully. Ready for deployment."
+
+      - name: Upload JUnit Test Report
+        uses: actions/upload-artifact@v3
+        if: always() # Ensure the artifact is uploaded even if tests fail
+        with:
+          name: TestReports-JUnit-XML
+          path: ./reports/junit.xml # Path must match the outputDirectory and outputName in package.json
+          retention-days: 5
