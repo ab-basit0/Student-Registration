@@ -28,6 +28,12 @@ jobs:
       - name: Install dependencies
         run: npm install
         
+      # === FIX FOR ES MODULE (IMPORT/EXPORT) ERROR ===
+      # This configures the environment to handle modern ES module syntax (import/export)
+      - name: Configure Node for ES Modules
+        run: echo "NODE_OPTIONS=--experimental-vm-modules" >> $GITHUB_ENV
+      # ===============================================
+
       # Step 4: Run Automated Tests (Task 4)
       - name: Run Jest Tests
         run: npm test
