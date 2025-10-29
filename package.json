@@ -21,6 +21,7 @@
   "jest": {
     "extensionsToTreatAsEsm": [
       ".js"
-    ]
+    ],
+    "transform": {}
   }
 }
